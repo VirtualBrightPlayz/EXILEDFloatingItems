@@ -1,0 +1,2 @@
+# EXILEDFloatingItems
+This is hell.
