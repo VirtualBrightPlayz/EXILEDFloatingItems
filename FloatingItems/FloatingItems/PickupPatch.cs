@@ -12,9 +12,12 @@ namespace FloatingItems
     public class PickupUpdatePatch
     {
         public static List<Pickup> haveBeenMoved = new List<Pickup>();
+        public static List<Pickup> canBeFloating = new List<Pickup>();
 
         public static void Postfix(Pickup __instance)
         {
+            if (!canBeFloating.Contains(__instance))
+                return;
             __instance.Rb.useGravity = false;
             __instance.GetComponent<Collider>().material = new PhysicMaterial() { bounciness = 100f, bounceCombine = PhysicMaterialCombine.Maximum };
             if (haveBeenMoved.Contains(__instance))

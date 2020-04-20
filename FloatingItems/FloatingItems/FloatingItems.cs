@@ -12,37 +12,57 @@ namespace FloatingItems
     {
         public override string getName => "FloatingItems";
         public HarmonyInstance inst;
+        public FIEvents PLEV;
         public static float minForce;
         public static float maxForce;
         public static float maxOffset;
+        public static List<string> allowFloatDrops;
 
         public override void OnDisable()
         {
-            if (!Config.GetBool("floating_items"))
+            if (!Config.GetBool("floating_items", false))
                 return;
             inst.UnpatchAll();
+            inst = null;
+            Events.ItemDroppedEvent -= PLEV.ItemDropped;
+            Events.RoundStartEvent -= PLEV.RoundStart;
+            PLEV = null;
         }
 
         public override void OnEnable()
         {
-            if (!Config.GetBool("floating_items"))
+            if (!Config.GetBool("floating_items", false))
                 return;
+            ReloadConfig();
+            inst = HarmonyInstance.Create("virtualbrightplayz.exiledfloatingitems");
+            inst.PatchAll();
+            PLEV = new FIEvents();
+            Events.ItemDroppedEvent += PLEV.ItemDropped;
+            Events.RoundStartEvent += PLEV.RoundStart;
+        }
+
+        public void ReloadConfig()
+        {
             minForce = Config.GetFloat("fitem_force_min", 5.0f);
             maxForce = Config.GetFloat("fitem_force_max", 10.0f);
             maxOffset = Config.GetFloat("fitem_offset_max", 2.0f);
-            inst = HarmonyInstance.Create("virtualbrightplayz.exiledfloatingitems");
-            inst.PatchAll();
+            try
+            {
+                allowFloatDrops = Config.GetStringList("fitem_userid_whitelist");
+            }
+            catch (Exception)
+            { }
+            if (allowFloatDrops == null)
+            {
+                allowFloatDrops = new List<string>();
+            }
         }
 
         public override void OnReload()
         {
-            if (!Config.GetBool("floating_items"))
+            if (!Config.GetBool("floating_items", false))
                 return;
-            minForce = Config.GetFloat("fitem_force_min", 5.0f);
-            maxForce = Config.GetFloat("fitem_force_max", 10.0f);
-            maxOffset = Config.GetFloat("fitem_offset_max", 2.0f);
-            inst = HarmonyInstance.Create("virtualbrightplayz.exiledfloatingitems");
-            inst.PatchAll();
+            ReloadConfig();
         }
     }
 }
