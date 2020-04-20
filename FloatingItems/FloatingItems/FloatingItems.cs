@@ -16,6 +16,8 @@ namespace FloatingItems
         public static float minForce;
         public static float maxForce;
         public static float maxOffset;
+        public static float forceShoot;
+        public static float rangeShoot;
         public static List<string> allowFloatDrops;
 
         public override void OnDisable()
@@ -26,6 +28,8 @@ namespace FloatingItems
             inst = null;
             Events.ItemDroppedEvent -= PLEV.ItemDropped;
             Events.RoundStartEvent -= PLEV.RoundStart;
+            Events.ConsoleCommandEvent -= PLEV.PlayerCmd;
+            Events.ShootEvent -= PLEV.PlayerShoot;
             PLEV = null;
         }
 
@@ -39,6 +43,8 @@ namespace FloatingItems
             PLEV = new FIEvents();
             Events.ItemDroppedEvent += PLEV.ItemDropped;
             Events.RoundStartEvent += PLEV.RoundStart;
+            Events.ConsoleCommandEvent += PLEV.PlayerCmd;
+            Events.ShootEvent += PLEV.PlayerShoot;
         }
 
         public void ReloadConfig()
@@ -46,6 +52,8 @@ namespace FloatingItems
             minForce = Config.GetFloat("fitem_force_min", 5.0f);
             maxForce = Config.GetFloat("fitem_force_max", 10.0f);
             maxOffset = Config.GetFloat("fitem_offset_max", 2.0f);
+            forceShoot = Config.GetFloat("sitem_force", 10.0f);
+            rangeShoot = Config.GetFloat("sitem_range", 3.0f);
             try
             {
                 allowFloatDrops = Config.GetStringList("fitem_userid_whitelist");
