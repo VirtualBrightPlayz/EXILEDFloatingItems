@@ -22,8 +22,8 @@ namespace FloatingItems
 
         public override void OnDisable()
         {
-            if (!Config.GetBool("floating_items", false))
-                return;
+            if (!Config.GetBool("floating_items", true))
+                    return;
             inst.UnpatchAll();
             inst = null;
             Events.ItemDroppedEvent -= PLEV.ItemDropped;
@@ -35,8 +35,8 @@ namespace FloatingItems
 
         public override void OnEnable()
         {
-            if (!Config.GetBool("floating_items", false))
-                return;
+            if (!Config.GetBool("floating_items", true))
+                    return;
             ReloadConfig();
             inst = HarmonyInstance.Create("virtualbrightplayz.exiledfloatingitems");
             inst.PatchAll();
@@ -49,10 +49,10 @@ namespace FloatingItems
 
         public void ReloadConfig()
         {
-            minForce = Config.GetFloat("fitem_force_min", 5.0f);
-            maxForce = Config.GetFloat("fitem_force_max", 10.0f);
+            minForce = Config.GetFloat("fitem_force_min", 50.0f);
+            maxForce = Config.GetFloat("fitem_force_max", 100.0f);
             maxOffset = Config.GetFloat("fitem_offset_max", 2.0f);
-            forceShoot = Config.GetFloat("sitem_force", 10.0f);
+            forceShoot = Config.GetFloat("sitem_force", 100.0f);
             rangeShoot = Config.GetFloat("sitem_range", 3.0f);
             try
             {
@@ -68,7 +68,7 @@ namespace FloatingItems
 
         public override void OnReload()
         {
-            if (!Config.GetBool("floating_items", false))
+            if (!Config.GetBool("floating_items", true))
                 return;
             ReloadConfig();
         }
